@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URLS</title>
+</head>
+<body>
+    <h1>Enter URL: </h1>
+    <input name="oriurl" placeholder="www.example.com">
+    <button type="submit">Submit</button>
+    <h2>History</h2>
+    <% if (urlData.length > 0) { %>
+    <table>
+        <thead>
+            <tr>
+                <th>S. No.</th>
+                <th>ORIGINAL URL</th>
+                <th>SHORT URL</th>
+                <th>Visit Count</th>
+            </tr>
+        </thead>
+        <tbody>
+           <% urlData.forEach((url,i)=>{ %>
+                <tr>
+                    <td><%= i+1 %></td>
+                    <td class="original-url"><a href="<%= url.original_url %>" target="_blank"><%= url.original_url %></a></td>
+                    <td><a href="<%= `http://localhost:3000/${url.short_url}` %>" target="_blank"><%= url.short_url %></a></td>
+                    <td><%=url.visitCount %></td>
+                </tr>
+          <% }) %>
+        </tbody>
+    </table>
+    <% } else { %>
+        <p>Empty</p>
+        <% } %>
+</body>
+</html>
