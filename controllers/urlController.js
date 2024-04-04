@@ -23,9 +23,11 @@ async function handlegetURL(req,res){
 
 async function showHomePage(req,res){
     const allUrls = await urlData.find({});
+    const baseUrl = process.env.base_URL || (req.protocol + '://' + req.get('host'));
+    const fullUrl = baseUrl + req.originalUrl;
     res.render('index',{
         urlData : allUrls,
-        baseUrl : process.env.base_URL
+        fullUrl : fullUrl
     });
 }
 
