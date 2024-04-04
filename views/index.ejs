@@ -6,9 +6,11 @@
     <title>URLS</title>
 </head>
 <body>
+    <form action="/api/url" method="POST">
     <h1>Enter URL: </h1>
     <input name="oriurl" placeholder="www.example.com">
     <button type="submit">Submit</button>
+    </form>
     <h2>History</h2>
     <% if (urlData.length > 0) { %>
     <table>
@@ -25,7 +27,7 @@
                 <tr>
                     <td><%= i+1 %></td>
                     <td class="original-url"><a href="<%= url.original_url %>" target="_blank"><%= url.original_url %></a></td>
-                    <td><a href="<%= `http://localhost:3000/${url.short_url}` %>" target="_blank"><%= url.short_url %></a></td>
+                    <td><a href="<%= `${process.env.base_URL}${url.short_url}` %>" target="_blank"><%= `${process.env.base_URL}${url.short_url}` %></a></td>
                     <td><%=url.visitCount %></td>
                 </tr>
           <% }) %>
