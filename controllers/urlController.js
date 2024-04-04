@@ -24,7 +24,8 @@ async function handlegetURL(req,res){
 async function showHomePage(req,res){
     const allUrls = await urlData.find({});
     res.render('index',{
-        urlData : allUrls
+        urlData : allUrls,
+        baseUrl : process.env.base_URL
     });
 }
 

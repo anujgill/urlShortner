@@ -27,7 +27,7 @@
                 <tr>
                     <td><%= i+1 %></td>
                     <td class="original-url"><a href="<%= url.original_url %>" target="_blank"><%= url.original_url %></a></td>
-                    <td><a href="<%= `${process.env.base_URL}${url.short_url}` %>" target="_blank"><%= `${process.env.base_URL}${url.short_url}` %></a></td>
+                    <td><a href="<%= `${url.short_url}` %>" target="_blank"><%= baseUrl%>/<%= url.short_url%></a></td>
                     <td><%=url.visitCount %></td>
                 </tr>
           <% }) %>
