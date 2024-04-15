@@ -36,11 +36,8 @@
     <% } else { %>
         <p>Empty</p>
         <% } %>
-    <button onclick="logout()">LogOut</button>
+    <form action="/user/logout">
+        <button type="submit">LogOut</button>
+    </form>
 </body>
-    <script>
-        function logout() {
-            window.location.href = '/user/logout';
-        }
-    </script>
 </html>
