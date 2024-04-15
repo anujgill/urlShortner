@@ -6,7 +6,7 @@
     <title>URLS</title>
 </head>
 <body>
-    <form action="/api/url" method="POST">
+    <form action="/url" method="POST">
     <h1>Enter URL: </h1>
     <input name="oriurl" placeholder="www.example.com">
     <button type="submit">Submit</button>
@@ -27,7 +27,7 @@
                 <tr>
                     <td><%= i+1 %></td>
                     <td class="original-url"><a href="<%= url.original_url %>" target="_blank"><%= url.original_url %></a></td>
-                    <td><a href="<%= `${url.short_url}` %>" target="_blank"><%= fullUrl%><%= url.short_url%></a></td>
+                    <td><a href="<%= `/url/${url.short_url}` %>" target="_blank"><%= fullUrl%><%= url.short_url%></a></td>
                     <td><%=url.visitCount %></td>
                 </tr>
           <% }) %>

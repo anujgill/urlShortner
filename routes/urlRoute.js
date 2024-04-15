@@ -1,10 +1,10 @@
 const express = require('express');
 const Router = express.Router();
-const {handlePostURL,handlegetURL,showHomePage} = require('../controllers/urlController')
+const {handlePostURL,handlegetURL} = require('../controllers/urlController');
+const validUser = require('../middlewares/userAccess');
 
 
-Router.post('/api/url',handlePostURL);
+Router.post('/',validUser,handlePostURL);
 Router.get('/:shortUrl',handlegetURL);
-Router.get('/',showHomePage);
 
 module.exports = Router;
