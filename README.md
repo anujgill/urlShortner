@@ -15,24 +15,36 @@ This is a URL shortener web application where users can shorten long URLs and vi
 - Express.js: Web application framework for Node.js
 - MongoDB: NoSQL database for storing user data and URL records
 - JSON Web Tokens (JWT): Authentication mechanism for securing user sessions
-- bcrypt: Library for hashing user passwords securely
 - Shortid: Library for generating unique short IDs for shortened URLs
 
 ## Installation
 
-1. Clone the repository:
- ```bash
-  https://github.com/anujgill/urlShortner.git
-2. Install dependencies:
-  ```bash
-  cd urlShortner
-  npm install
-3. Set up environment variables:
-```bash
-cp .env.example .env
-4. Start the server:
-```bash
-npm start
+1. **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/your_username/url-shortener-app.git
+    ```
+
+2. **Install dependencies:**
+
+    ```bash
+    cd url-shortener-app
+    npm install
+    ```
+
+3. **Set up environment variables:**
+
+    ```bash
+    cp .env.example .env
+    ```
+
+    Edit the `.env` file and provide values for environment variables such as MongoDB URI, JWT secret key, etc.
+
+4. **Start the server:**
+
+    ```bash
+    npm start
+    ```
 
 ## Usage
 
