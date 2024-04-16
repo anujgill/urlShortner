@@ -22,13 +22,13 @@ This is a URL shortener web application where users can shorten long URLs and vi
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/your_username/url-shortener-app.git
+    git clone https://github.com/anujgill/urlShortner.git
     ```
 
 2. **Install dependencies:**
 
     ```bash
-    cd url-shortener-app
+    cd urlShortner
     npm install
     ```
 
