@@ -1,14 +1,14 @@
 const jwt = require('jsonwebtoken');
-const secretKey = process.env.secretKey;
 function setUser(user, res){
-    const token = jwt.sign({_id: user._id,username:user.username,email:user.email}, secretKey,{expiresIn : "12h"});
-    res.cookie("uid", token,{maxAge:"12h"});
+    const token = jwt.sign({_id: user._id,username:user.username,email:user.email}, process.env.SECRET_KEY,{expiresIn : "12h"});
+    const maxAgeMs = 12 * 60 * 60 * 1000;
+    res.cookie("uid", token,{maxAge: maxAgeMs});
 }
 
 function getUser(token){
     if(!token) return null;
     try {
-        return jwt.verify(token, secretKey);
+        return jwt.verify(token, process.env.SECRET_KEY);
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             return null;
