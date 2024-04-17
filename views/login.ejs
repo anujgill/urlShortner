@@ -9,15 +9,10 @@
     <form action="/user/login" method="post">
         <input name="email" placeholder="Email">
         <input type="password" name="password" placeholder="Password">
-        <button type="submit">Submit</button>
+        <button type="submit">Login</button>
     </form>
-    <button onclick="signUp()">SignUp</button>
-
-
-    <script>
-        function signUp(){
-            window.location.href = "/user/signup"
-        }
-    </script>
+    <form action="/signup">
+        <button type="submit">SignUp</button>
+    </form>
 </body>
 </html>
