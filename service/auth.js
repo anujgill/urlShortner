@@ -10,9 +10,7 @@ function getUser(token){
     try {
         return jwt.verify(token, process.env.SECRET_KEY);
     } catch (error) {
-        if (error.name === 'TokenExpiredError') {
-            return null;
-        }
+        console.log(error);
         throw error;
     }
 }

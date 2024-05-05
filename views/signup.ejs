@@ -3,22 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sign Up</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #ffffff;
+            padding: 30px;
+            width: 450px;
+            border-radius: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .form button {
+            align-self: flex-end;
+        }
+
+        .flex-column > label {
+            color: #151717;
+            font-weight: 600;
+        }
+
+        .inputForm {
+            border: 1.5px solid #ecedec;
+            border-radius: 10px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            transition: 0.2s ease-in-out;
+        }
+
+        .input {
+            margin-left: 10px;
+            border-radius: 10px;
+            border: none;
+            width: 85%;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+
+        .input:focus {
+            outline: none;
+        }
+
+        .inputForm:focus-within {
+            border: 1.5px solid #2d79f3;
+        }
+
+        .button-submit {
+            margin: 20px 0 10px 0;
+            background-color: #151717;
+            border: none;
+            color: white;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 10px;
+            height: 50px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .button-submit:hover {
+            background-color: #252727;
+        }
+
+        .p {
+            text-align: center;
+            color: black;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .span {
+            font-size: 14px;
+            margin-left: 5px;
+            color: #2d79f3;
+            font-weight: 500;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <form action="/user/signup" method="post">
-        <input name="username" placeholder="Username">
-        <input name="email" placeholder="Email">
-        <input type="password" name="password" placeholder="Password">
-        <button type="submit">Signup</button>
-    </form>
 
-    <button onclick="login()">Login</button>
+    <form class="form" action="/user/signup" method="post">
 
+        <div class="flex-column">
+            <label>Username </label></div>
+            <div class="inputForm">
+              <input name="username" type="text" class="input" placeholder="Enter your Username">
+            </div>
+
+        <div class="flex-column">
+          <label>Email </label></div>
+          <div class="inputForm">
+            <input name="email" type="text" class="input" placeholder="Enter your Email">
+          </div>
+        
+        <div class="flex-column">
+          <label>Password </label></div>
+          <div class="inputForm">
+            <input name="password" type="password" class="input" placeholder="Enter your Password">
+          </div>
+        
+        <button class="button-submit" type="submit" >Sign Up</button>
+        <p class="p">Already have an account? <span class="span" onclick="login()">Log In</span>
 
     <script>
         function login(){
-            window.location.href = "/login"
+            window.location.href = "/login";
         }
     </script>
 </body>

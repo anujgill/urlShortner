@@ -1,14 +1,14 @@
 const urlData = require('../models/urlModel');
-const { getUser } = require('../service/auth');
+// const { getUser } = require('../service/auth');
 
 async function showHomePage(req,res){
     // console.log(req.user)
     const allUrls = await urlData.find({createdBy:req.user?._id});
-    const baseUrl = process.env.base_URL || (req.protocol + '://' + req.get('host'));
-    const fullUrl = baseUrl + req.originalUrl;
+    const baseUrl = process.env.base_URL;
+    //  || (req.protocol + '://' + req.get('host'));
     res.render('index',{
         urlData : allUrls,
-        fullUrl : fullUrl
+        baseUrl : baseUrl
     });
 }
 

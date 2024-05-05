@@ -2,6 +2,7 @@ const users = require('../models/userModel');
 const {setUser,remUser} = require('../service/auth');
 
 async function handleSignUp(req,res){
+    console.log(req.body)
     const newUser = req.body;
     await users.create(newUser);
     return res.redirect('/login');
@@ -9,6 +10,7 @@ async function handleSignUp(req,res){
 
 async function handleLogIn(req,res){
     const {email,password} = req.body;
+    // console.log(req.body)
     const u = await users.findOne({email,password});
     if(u){
         setUser(u,res);

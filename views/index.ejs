@@ -4,12 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URLS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        input {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 300px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .original-url {
+            max-width: 200px;
+            overflow: auto;
+        }
+
+        .logout-form {
+            margin-top: 20px;
+        }
+
+        .logout-form button {
+            background-color: #dc3545;
+        }
+
+        .logout-form button:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
 <body>
     <form action="/url" method="POST">
-    <h1>Enter URL: </h1>
-    <input name="oriurl" placeholder="www.example.com">
-    <button type="submit">Submit</button>
+        <h1>Enter URL: </h1>
+        <input name="oriurl" placeholder="www.example.com">
+        <button type="submit">Submit</button>
     </form>
     <h2>History</h2>
     <% if (urlData.length > 0) { %>
@@ -27,7 +101,7 @@
                 <tr>
                     <td><%= i+1 %></td>
                     <td class="original-url"><a href="<%= url.original_url %>" target="_blank"><%= url.original_url %></a></td>
-                    <td><a href="<%= `/url/${url.short_url}` %>" target="_blank"><%= fullUrl%>url/<%= url.short_url%></a></td>
+                    <td><a href="<%= `/url/${url.short_url}` %>" target="_blank"><%= baseUrl%>/url/<%= url.short_url%></a></td>
                     <td><%=url.visitCount %></td>
                 </tr>
           <% }) %>
@@ -35,8 +109,8 @@
     </table>
     <% } else { %>
         <p>Empty</p>
-        <% } %>
-    <form action="/user/logout">
+    <% } %>
+    <form action="/user/logout" class="logout-form">
         <button type="submit">LogOut</button>
     </form>
 </body>

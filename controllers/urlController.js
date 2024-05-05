@@ -1,18 +1,16 @@
 const urlData = require('../models/urlModel')
 const randomId = require('random-id');
-require('dotenv').config();
 
 async function handlePostURL(req,res){
     const fullUrl = req.body.oriurl;
     const id = randomId(8,'aA0');
     // console.log(req.user);
-    const createdUrl = await urlData.create({
+    await urlData.create({
         original_url:fullUrl,
         short_url: id,
         visitCount:0,
         createdBy:req.user._id
     });
-    // console.log(createdUrl);
     res.redirect("/");
 }
 
