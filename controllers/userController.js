@@ -7,10 +7,10 @@ async function handleSignUp(req, res) {
     try {
         const { username, email, password, confirmPassword } = req.body;
         if (!username || !email || !password || !confirmPassword) {
-            return res.render('signup', { error: 'All fields are required.', msg: null });
+            return res.render('signup', { error: 'All fields are required.', msg: null, username: username || '', email: email || '' });
         }
         if (password !== confirmPassword) {
-            return res.render('signup', { error: 'Passwords do not match.', msg: null });
+            return res.render('signup', { error: 'Passwords do not match.', msg: null, username: username || '', email: email || '' });
         }
 
         const existingUser = await users.findOne({ email });
@@ -22,7 +22,7 @@ async function handleSignUp(req, res) {
 
         if (existingUser) {
             if (existingUser.isVerified) {
-                return res.render('signup', { error: 'Email already registered. Please log in.', msg: null });
+                return res.render('signup', { error: 'Email already registered. Please log in.', msg: null, username: username || '', email: email || '' });
             } else {
                 // Update unverified user's credentials and send new OTP
                 existingUser.username = username;
@@ -56,7 +56,7 @@ async function handleSignUp(req, res) {
         return res.redirect(`/verify-otp?email=${encodeURIComponent(email)}&msg=Verification code sent to your email.`);
     } catch (error) {
         console.error('Sign Up Error:', error);
-        return res.render('signup', { error: 'An error occurred during registration. Please try again.', msg: null });
+        return res.render('signup', { error: 'An error occurred during registration. Please try again.', msg: null, username: req.body.username || '', email: req.body.email || '' });
     }
 }
 

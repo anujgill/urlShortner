@@ -33,7 +33,9 @@ async function showHomePage(req, res) {
 function showSignUp(req, res) {
     res.render('signup', {
         error: req.query.error || null,
-        msg: req.query.msg || null
+        msg: req.query.msg || null,
+        username: '',
+        email: ''
     });
 }
 
