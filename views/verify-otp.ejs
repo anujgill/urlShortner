@@ -88,9 +88,58 @@
             localStorage.setItem('theme', targetTheme);
         });
 
-        // Simple resend click indicator
+        // 2-Minute Resend OTP Timer
+        const email = "<%= email %>";
         const resendLink = document.getElementById('resend-link');
-        resendLink.addEventListener('click', () => {
+        const timerKey = `otp_resend_expiry_${encodeURIComponent(email)}`;
+        
+        let expiry = localStorage.getItem(timerKey);
+        const now = Date.now();
+        
+        if (!expiry || parseInt(expiry) < now) {
+            // Set new 2-minute timer from current load
+            expiry = now + 2 * 60 * 1000;
+            localStorage.setItem(timerKey, expiry);
+        } else {
+            expiry = parseInt(expiry);
+        }
+
+        let countdownInterval;
+
+        function updateTimer() {
+            const current = Date.now();
+            const diff = expiry - current;
+            
+            if (diff <= 0) {
+                clearInterval(countdownInterval);
+                resendLink.style.pointerEvents = 'auto';
+                resendLink.style.opacity = '1';
+                resendLink.style.cursor = 'pointer';
+                resendLink.innerText = 'Resend Code';
+                localStorage.removeItem(timerKey);
+            } else {
+                resendLink.style.pointerEvents = 'none';
+                resendLink.style.opacity = '0.6';
+                resendLink.style.cursor = 'not-allowed';
+                const minutes = Math.floor(diff / 60000);
+                const seconds = Math.floor((diff % 60000) / 1000);
+                resendLink.innerText = `Resend Code in ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Run immediately and start interval
+        updateTimer();
+        countdownInterval = setInterval(updateTimer, 1000);
+
+        // Reset timer expiry when clicked
+        resendLink.addEventListener('click', (e) => {
+            const current = Date.now();
+            if (expiry > current) {
+                e.preventDefault();
+                return;
+            }
+            // Set next cooldown expiry with 5s network/redirect buffer
+            localStorage.setItem(timerKey, Date.now() + 2 * 60 * 1000 + 5000);
             resendLink.style.pointerEvents = 'none';
             resendLink.innerText = 'Sending...';
         });
