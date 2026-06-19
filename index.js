@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
@@ -18,7 +19,7 @@ app.use('/',staticRouter);
 app.use('/url',urlRouter);
 app.use('/user',userRouter);
 
-require('dotenv').config();
+
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
 

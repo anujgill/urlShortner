@@ -7,10 +7,10 @@ async function handleSignUp(req, res) {
     try {
         const { username, email, password, confirmPassword } = req.body;
         if (!username || !email || !password || !confirmPassword) {
-            return res.render('signup', { error: 'All fields are required.' });
+            return res.render('signup', { error: 'All fields are required.', msg: null });
         }
         if (password !== confirmPassword) {
-            return res.render('signup', { error: 'Passwords do not match.' });
+            return res.render('signup', { error: 'Passwords do not match.', msg: null });
         }
 
         const existingUser = await users.findOne({ email });
@@ -22,7 +22,7 @@ async function handleSignUp(req, res) {
 
         if (existingUser) {
             if (existingUser.isVerified) {
-                return res.render('signup', { error: 'Email already registered. Please log in.' });
+                return res.render('signup', { error: 'Email already registered. Please log in.', msg: null });
             } else {
                 // Update unverified user's credentials and send new OTP
                 existingUser.username = username;
@@ -56,7 +56,7 @@ async function handleSignUp(req, res) {
         return res.redirect(`/verify-otp?email=${encodeURIComponent(email)}&msg=Verification code sent to your email.`);
     } catch (error) {
         console.error('Sign Up Error:', error);
-        return res.render('signup', { error: 'An error occurred during registration. Please try again.' });
+        return res.render('signup', { error: 'An error occurred during registration. Please try again.', msg: null });
     }
 }
 
@@ -64,18 +64,18 @@ async function handleLogIn(req, res) {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
-            return res.render('login', { error: 'Please provide email and password.' });
+            return res.render('login', { error: 'Please provide email and password.', msg: null });
         }
 
         const user = await users.findOne({ email });
         if (!user) {
-            return res.render('login', { error: 'Invalid email or password.' });
+            return res.render('login', { error: 'Invalid email or password.', msg: null });
         }
 
         // Compare bcrypt passwords
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.render('login', { error: 'Invalid email or password.' });
+            return res.render('login', { error: 'Invalid email or password.', msg: null });
         }
 
         // Check verification status
@@ -97,7 +97,7 @@ async function handleLogIn(req, res) {
         return res.redirect('/');
     } catch (error) {
         console.error('Log In Error:', error);
-        return res.render('login', { error: 'An error occurred during login. Please try again.' });
+        return res.render('login', { error: 'An error occurred during login. Please try again.', msg: null });
     }
 }
 
