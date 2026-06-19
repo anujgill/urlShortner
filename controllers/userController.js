@@ -7,10 +7,10 @@ async function handleSignUp(req, res) {
     try {
         const { username, email, password, confirmPassword } = req.body;
         if (!username || !email || !password || !confirmPassword) {
-            return res.render('signup', { error: 'All fields are required.', msg: null, username: username || '', email: email || '' });
+            return res.render('signup', { error: 'All fields are required.', msg: null, username: username || '', email: email || '', password: password || '', confirmPassword: confirmPassword || '' });
         }
         if (password !== confirmPassword) {
-            return res.render('signup', { error: 'Passwords do not match.', msg: null, username: username || '', email: email || '' });
+            return res.render('signup', { error: 'Passwords do not match.', msg: null, username: username || '', email: email || '', password: password || '', confirmPassword: confirmPassword || '' });
         }
 
         const existingUser = await users.findOne({ email });
@@ -22,7 +22,7 @@ async function handleSignUp(req, res) {
 
         if (existingUser) {
             if (existingUser.isVerified) {
-                return res.render('signup', { error: 'Email already registered. Please log in.', msg: null, username: username || '', email: email || '' });
+                return res.render('signup', { error: 'Email already registered. Please log in.', msg: null, username: username || '', email: email || '', password: password || '', confirmPassword: confirmPassword || '' });
             } else {
                 // Update unverified user's credentials and send new OTP
                 existingUser.username = username;
@@ -56,7 +56,7 @@ async function handleSignUp(req, res) {
         return res.redirect(`/verify-otp?email=${encodeURIComponent(email)}&msg=Verification code sent to your email.`);
     } catch (error) {
         console.error('Sign Up Error:', error);
-        return res.render('signup', { error: 'An error occurred during registration. Please try again.', msg: null, username: req.body.username || '', email: req.body.email || '' });
+        return res.render('signup', { error: 'An error occurred during registration. Please try again.', msg: null, username: req.body.username || '', email: req.body.email || '', password: req.body.password || '', confirmPassword: req.body.confirmPassword || '' });
     }
 }
 
@@ -206,25 +206,25 @@ async function handleResetPassword(req, res) {
     const { email, otp, password, confirmPassword } = req.body;
     try {
         if (!email || !otp || !password || !confirmPassword) {
-            return res.render('reset-password', { email, error: 'All fields are required.', msg: null });
+            return res.render('reset-password', { email, error: 'All fields are required.', msg: null, otp: otp || '', password: password || '', confirmPassword: confirmPassword || '' });
         }
 
         if (password !== confirmPassword) {
-            return res.render('reset-password', { email, error: 'Passwords do not match.', msg: null });
+            return res.render('reset-password', { email, error: 'Passwords do not match.', msg: null, otp: otp || '', password: password || '', confirmPassword: confirmPassword || '' });
         }
 
         const user = await users.findOne({ email });
         if (!user) {
-            return res.render('reset-password', { email, error: 'User not found.', msg: null });
+            return res.render('reset-password', { email, error: 'User not found.', msg: null, otp: otp || '', password: password || '', confirmPassword: confirmPassword || '' });
         }
 
         const otpRecord = user.otp;
         if (!otpRecord || otpRecord.code !== otp || otpRecord.purpose !== 'reset') {
-            return res.render('reset-password', { email, error: 'Invalid reset code.', msg: null });
+            return res.render('reset-password', { email, error: 'Invalid reset code.', msg: null, otp: otp || '', password: password || '', confirmPassword: confirmPassword || '' });
         }
 
         if (new Date() > otpRecord.expiry) {
-            return res.render('reset-password', { email, error: 'Reset code has expired. Please request a new one.', msg: null });
+            return res.render('reset-password', { email, error: 'Reset code has expired. Please request a new one.', msg: null, otp: otp || '', password: password || '', confirmPassword: confirmPassword || '' });
         }
 
         // Update password and clear OTP
@@ -236,7 +236,7 @@ async function handleResetPassword(req, res) {
         return res.redirect('/login?msg=Password reset successfully! Please log in with your new password.');
     } catch (error) {
         console.error('Reset Password Error:', error);
-        return res.render('reset-password', { email, error: 'An error occurred. Please try again.', msg: null });
+        return res.render('reset-password', { email, error: 'An error occurred. Please try again.', msg: null, otp: req.body.otp || '', password: req.body.password || '', confirmPassword: req.body.confirmPassword || '' });
     }
 }
 
