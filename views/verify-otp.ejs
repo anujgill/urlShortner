@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log In - LinkCraft</title>
+    <title>Verify Email - LinkCraft</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <script>
@@ -36,8 +36,8 @@
 
     <div class="auth-container">
         <div class="card auth-card">
-            <h1 class="auth-title">Welcome Back</h1>
-            <p class="auth-subtitle">Log in to manage and track your shortened links.</p>
+            <h1 class="auth-title">Verify Your Email</h1>
+            <p class="auth-subtitle">We have sent a 6-digit One-Time Password (OTP) to <strong style="color: var(--text-main);"><%= email %></strong>.</p>
 
             <% if (error) { %>
                 <div class="alert alert-danger">
@@ -56,45 +56,25 @@
                 </div>
             <% } %>
 
-            <form action="/user/login" method="POST">
+            <form action="/user/verify-otp" method="POST">
+                <input type="hidden" name="email" value="<%= email %>">
+                
                 <div class="form-group">
-                    <label class="form-label" for="email">Email Address</label>
+                    <label class="form-label" for="otp">Enter 6-Digit OTP Code</label>
                     <div class="input-wrapper">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
-                        <input class="input-field" type="email" id="email" name="email" placeholder="you@example.com" required>
+                        <input class="input-field" type="text" id="otp" name="otp" placeholder="123456" pattern="[0-9]{6}" maxlength="6" style="letter-spacing: 0.25em; font-size: 1.25rem; font-weight: 700; text-align: center; padding-left: 1rem;" required>
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 0.5rem;">
-                    <label class="form-label" for="password">Password</label>
-                    <div class="input-wrapper">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                        <input class="input-field" type="password" id="password" name="password" placeholder="••••••••" style="padding-right: 2.75rem;" required>
-                        <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('password', this)" aria-label="Toggle password visibility">
-                            <svg class="eye-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 1.25rem; height: 1.25rem;">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                            <svg class="eye-off-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 1.25rem; height: 1.25rem; display: none;">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.878 10.414a3 3 0 00-4.293 4.293M21 12a9 9 0 01-9 9m-9-9a9 9 0 019-9m11.242 11.242L3 3m6 6l1.586-1.586m5.828 5.828L15 15" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div style="display: flex; justify-content: flex-end; margin-bottom: 1.5rem;">
-                    <a href="/forgot-password" style="font-size: 0.85rem; font-weight: 500;">Forgot password?</a>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-full">Log In</button>
+                <button type="submit" class="btn btn-primary btn-full" style="margin-top: 1.5rem;">Verify & Log In</button>
             </form>
 
-            <p style="text-align: center; margin-top: 1.5rem; color: var(--text-muted); font-size: 0.95rem;">
-                New to LinkCraft? <a href="/signup" style="font-weight: 600;">Create an account</a>
+            <p style="text-align: center; margin-top: 2rem; color: var(--text-muted); font-size: 0.95rem;">
+                Didn't receive the email? 
+                <a href="/user/resend-otp?email=<%= encodeURIComponent(email) %>" style="font-weight: 600;" id="resend-link">Resend Code</a>
             </p>
         </div>
     </div>
@@ -108,21 +88,12 @@
             localStorage.setItem('theme', targetTheme);
         });
 
-        function togglePasswordVisibility(inputId, button) {
-            const input = document.getElementById(inputId);
-            const eyeIcon = button.querySelector('.eye-icon');
-            const eyeOffIcon = button.querySelector('.eye-off-icon');
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                eyeIcon.style.display = 'none';
-                eyeOffIcon.style.display = 'block';
-            } else {
-                input.type = 'password';
-                eyeIcon.style.display = 'block';
-                eyeOffIcon.style.display = 'none';
-            }
-        }
+        // Simple resend click indicator
+        const resendLink = document.getElementById('resend-link');
+        resendLink.addEventListener('click', () => {
+            resendLink.style.pointerEvents = 'none';
+            resendLink.innerText = 'Sending...';
+        });
     </script>
 </body>
 </html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - LinkCraft URL Shortener</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <script>
+        const theme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+    </script>
+</head>
+<body>
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <header>
+        <div class="navbar">
+            <a href="/" class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 1.8rem; height: 1.8rem; color: var(--primary);">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <span>LinkCraft</span>
+            </a>
+            <div class="nav-actions">
+                <span style="font-weight: 500; font-size: 0.95rem;">Welcome, <strong style="color: var(--primary);"><%= user.username %></strong></span>
+                <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Dark/Light theme">
+                    <svg class="sun-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m2.828 0l-.707-.707M17.657 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <svg class="moon-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+                <a href="/user/logout" class="btn btn-secondary">Log Out</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <% if (error) { %>
+            <div class="alert alert-danger">
+                <svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 10 2 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                <span><%= error %></span>
+            </div>
+        <% } %>
+        <% if (msg) { %>
+            <div class="alert alert-success">
+                <svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span><%= msg %></span>
+            </div>
+        <% } %>
+
+        <%
+        // Dynamic analytics processing
+        const totalLinks = urlData.length;
+        const totalClicks = urlData.reduce((sum, item) => sum + item.visitCount, 0);
+        let topLink = null;
+        if (totalLinks > 0) {
+            topLink = [...urlData].sort((a, b) => b.visitCount - a.visitCount)[0];
+        }
+        %>
+
+        <!-- Analytics Row -->
+        <section class="analytics-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" />
+                    </svg>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-label">Total Short Links</span>
+                    <span class="stat-value" id="stat-links-count"><%= totalLinks %></span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                    </svg>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-label">Total Link Clicks</span>
+                    <span class="stat-value" id="stat-clicks-count"><%= totalClicks %></span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    </svg>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-label">Top Link clicks</span>
+                    <span class="stat-value" id="stat-top-link"><%= topLink ? `${topLink.short_url} (${topLink.visitCount})` : 'None' %></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shortener Form -->
+        <section class="shortener-card">
+            <h2 style="font-size: 1.25rem; margin-bottom: 1.5rem;">Shorten a New Link</h2>
+            <form action="/url" method="POST">
+                <div class="shortener-form-fields">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="oriurl">Destination URL *</label>
+                        <div class="input-wrapper">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" />
+                            </svg>
+                            <input class="input-field" type="text" id="oriurl" name="oriurl" placeholder="https://example.com/very-long-link-to-shorten" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="customAlias">Custom Alias (Optional)</label>
+                        <div class="input-wrapper">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <input class="input-field" type="text" id="customAlias" name="customAlias" placeholder="my-custom-slug">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="height: 48px; padding-left: 2rem; padding-right: 2rem;">Shorten</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- URLs Table List -->
+        <section>
+            <div class="section-header">
+                <h2>Your Shortened URLs</h2>
+                <div class="search-filter-bar">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input type="text" class="search-input" id="search-bar" placeholder="Search links..." onkeyup="filterLinks()">
+                </div>
+            </div>
+
+            <div class="url-table-container">
+                <% if (urlData.length > 0) { %>
+                    <table class="url-table" id="links-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Original URL</th>
+                                <th>Short URL</th>
+                                <th>Clicks</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% urlData.forEach((url, i) => { %>
+                                <tr id="row-<%= url._id %>" class="url-row-item">
+                                    <td style="font-weight: 600; color: var(--text-muted);"><%= i + 1 %></td>
+                                    <td class="original-link-cell">
+                                        <a href="<%= url.original_url %>" target="_blank" title="<%= url.original_url %>">
+                                            <%= url.original_url %>
+                                        </a>
+                                    </td>
+                                    <td class="short-link-cell">
+                                        <a href="<%= baseUrl %>/url/<%= url.short_url %>" target="_blank" id="link-text-<%= url._id %>">
+                                            <%= baseUrl %>/url/<%= url.short_url %>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="clicks-badge" id="clicks-val-<%= url._id %>"><%= url.visitCount %></span>
+                                    </td>
+                                    <td class="actions-cell">
+                                        <button class="action-btn action-btn-copy" onclick="copyToClipboard('<%= baseUrl %>/url/<%= url.short_url %>', '<%= url._id %>')" title="Copy to clipboard">
+                                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                            </svg>
+                                        </button>
+                                        <button class="action-btn" onclick="showQrModal('<%= baseUrl %>/url/<%= url.short_url %>', '<%= url.short_url %>')" title="View QR Code">
+                                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-16v3m9 8h-3M4 12h3m1.535-6.465l-.707.707M16.243 16.243l-.707.707M6.343 17.657l-.707.707M17.657 6.343l-.707-.707" />
+                                            </svg>
+                                        </button>
+                                        <button class="action-btn action-btn-delete" onclick="confirmDelete('<%= url._id %>', '<%= url.short_url %>')" title="Delete URL">
+                                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <div class="empty-state">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" />
+                        </svg>
+                        <p>No URLs shortened yet. Enter a destination link above to begin!</p>
+                    </div>
+                <% } %>
+            </div>
+        </section>
+
+        <!-- Collapsible "About the Platform" Drawer -->
+        <section class="about-section-container">
+            <div class="about-header" onclick="toggleAboutDrawer()" id="about-drawer-head">
+                <h2>About the Platform</h2>
+                <div class="about-toggle-icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 1.5rem; height: 1.5rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+            </div>
+            <div class="about-content" id="about-drawer-content">
+                <div class="about-grid">
+                    <div class="about-item">
+                        <h4>What LinkCraft Does</h4>
+                        <p>LinkCraft serves as a secure, fast, and feature-rich utility tool that turns long, complex website URLs into short, easy-to-manage web links.</p>
+                    </div>
+                    <div class="about-item">
+                        <h4>Key Features</h4>
+                        <p>Custom Brand Slugs/Aliases, automated dynamic click-tracking, secure email OTP authentication on register/forgot-password flow, and instant scannable QR Code generation.</p>
+                    </div>
+                    <div class="about-item">
+                        <h4>Benefits to Users</h4>
+                        <p>Saves character space in text posts, builds cleaner share cards, tracks redirection performance metrics in real-time, and secures user workspace from account compromise.</p>
+                    </div>
+                    <div class="about-item">
+                        <h4>How the Service Works</h4>
+                        <p>Enter any URL (e.g. blog post link), optionally type a memorable alias (like "my-post"), and click Shorten. Share the resulting link, and we take care of click counts and mobile redirection.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-copy" style="border: none; margin-top: 0; padding-top: 0;">
+            <p>&copy; 2026 LinkCraft. All rights reserved. Double-guarded OTP-authenticated shortening service.</p>
+        </div>
+    </footer>
+
+    <!-- QR Code Modal -->
+    <div class="modal-overlay" id="qr-modal">
+        <div class="modal">
+            <h3>Link QR Code</h3>
+            <p id="qr-modal-alias">Scan this code to access short link.</p>
+            <img src="" alt="Link QR Code" class="qr-code-img" id="qr-modal-img">
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeQrModal()">Close</button>
+                <a href="" download class="btn btn-primary" id="qr-download-btn" target="_blank">Download Image</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal">
+            <h3 style="color: var(--danger);">Confirm Deletion</h3>
+            <p>Are you sure you want to delete this short URL: <strong id="delete-modal-alias" style="color: var(--text-main);"></strong>? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" id="delete-confirm-btn" onclick="executeDelete()">Delete Link</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme Switch
+        const toggleBtn = document.getElementById('theme-toggle');
+        toggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', targetTheme);
+            localStorage.setItem('theme', targetTheme);
+        });
+
+        // About Platform Collapsible Drawer
+        function toggleAboutDrawer() {
+            const head = document.getElementById('about-drawer-head');
+            const content = document.getElementById('about-drawer-content');
+            head.classList.toggle('active');
+            if (head.classList.contains('active')) {
+                content.style.maxHeight = content.scrollHeight + "px";
+            } else {
+                content.style.maxHeight = "0px";
+            }
+        }
+
+        // Search Filter logic
+        function filterLinks() {
+            const input = document.getElementById('search-bar');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('links-table');
+            if (!table) return;
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) { // Skip header row
+                const row = rows[i];
+                const originalLink = row.cells[1].textContent.toLowerCase();
+                const shortLink = row.cells[2].textContent.toLowerCase();
+                if (originalLink.includes(filter) || shortLink.includes(filter)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        }
+
+        // Custom Toast Notifications
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            const icon = type === 'success' 
+                ? `<svg class="toast-success-icon" style="width:1.25rem;height:1.25rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`
+                : `<svg class="toast-danger-icon" style="width:1.25rem;height:1.25rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`;
+            
+            toast.innerHTML = `
+                ${icon}
+                <span class="toast-message">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 50);
+            
+            // Auto hide
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Clipboard Copy
+        function copyToClipboard(text, id) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Short link copied to clipboard!");
+            }).catch(err => {
+                showToast("Failed to copy link. Please select and copy manually.", "danger");
+            });
+        }
+
+        // QR Code Modal Control
+        function showQrModal(fullUrl, alias) {
+            const modal = document.getElementById('qr-modal');
+            const img = document.getElementById('qr-modal-img');
+            const desc = document.getElementById('qr-modal-alias');
+            const downloadBtn = document.getElementById('qr-download-btn');
+            
+            // Use free global QR Code API
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(fullUrl)}`;
+            
+            desc.innerHTML = `Scan to navigate to <strong>${alias}</strong>:`;
+            img.src = qrUrl;
+            downloadBtn.href = qrUrl;
+            
+            modal.classList.add('active');
+        }
+
+        function closeQrModal() {
+            document.getElementById('qr-modal').classList.remove('active');
+        }
+
+        // Delete Dialog Controls
+        let deleteTargetId = null;
+        function confirmDelete(id, alias) {
+            deleteTargetId = id;
+            document.getElementById('delete-modal-alias').innerText = alias;
+            document.getElementById('delete-modal').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('delete-modal').classList.remove('active');
+            deleteTargetId = null;
+        }
+
+        async function executeDelete() {
+            if (!deleteTargetId) return;
+            
+            try {
+                const response = await fetch(`/url/${deleteTargetId}`, {
+                    method: 'DELETE'
+                });
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    // Remove row from UI dynamically
+                    const row = document.getElementById(`row-${deleteTargetId}`);
+                    if (row) {
+                        row.style.opacity = '0';
+                        setTimeout(() => {
+                            row.remove();
+                            // Update total count
+                            const countEl = document.getElementById('stat-links-count');
+                            if (countEl) {
+                                countEl.innerText = Math.max(0, parseInt(countEl.innerText) - 1);
+                            }
+                            
+                            // Re-calculate clicks or check if table is empty
+                            const table = document.getElementById('links-table');
+                            if (table && table.getElementsByTagName('tbody')[0].rows.length === 0) {
+                                window.location.reload(); // reload to show empty state
+                            }
+                        }, 300);
+                    }
+                    showToast("Link deleted successfully!");
+                } else {
+                    showToast(result.error || "Failed to delete link.", "danger");
+                }
+            } catch (err) {
+                console.error("Delete fetch error:", err);
+                showToast("Server error occurred while deleting.", "danger");
+            } finally {
+                closeDeleteModal();
+            }
+        }
+    </script>
+</body>
+</html>

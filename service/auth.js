@@ -10,8 +10,8 @@ function getUser(token){
     try {
         return jwt.verify(token, process.env.SECRET_KEY);
     } catch (error) {
-        console.log(error);
-        throw error;
+        console.log("JWT Verification Error:", error.message);
+        return null;
     }
 }
 

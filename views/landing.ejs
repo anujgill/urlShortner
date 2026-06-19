@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener - Simplify & Track Your Links</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <script>
+        // Sync theme immediately to avoid flash of light mode
+        const theme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+    </script>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="/" class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 1.8rem; height: 1.8rem; color: var(--primary);">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <span>LinkCraft</span>
+            </a>
+            <div class="nav-actions">
+                <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Dark/Light theme">
+                    <!-- Sun Icon -->
+                    <svg class="sun-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m2.828 0l-.707-.707M17.657 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <!-- Moon Icon -->
+                    <svg class="moon-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+                <a href="/login" class="btn btn-secondary">Log In</a>
+                <a href="/signup" class="btn btn-primary">Sign Up</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <% if (error) { %>
+            <div class="alert alert-danger">
+                <svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 10 2 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                <span><%= error %></span>
+            </div>
+        <% } %>
+        <% if (msg) { %>
+            <div class="alert alert-success">
+                <svg class="alert-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span><%= msg %></span>
+            </div>
+        <% } %>
+
+        <section class="hero">
+            <h1>Shorten Links. Share Instantly. Track Growth.</h1>
+            <p>LinkCraft is a premium URL shortening platform designed to turn long, messy links into memorable, click-optimized URLs, complete with real-time tracking analytics and custom aliases.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <a href="/signup" class="btn btn-primary btn-icon">
+                    <span>Create Free Account</span>
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+                <a href="#about" class="btn btn-secondary">Learn More</a>
+            </div>
+        </section>
+
+        <!-- Steps Section -->
+        <section class="steps-section">
+            <h2>How It Works</h2>
+            <div class="steps-container">
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <h3 class="step-title">Paste Long Link</h3>
+                    <p class="step-desc">Enter your long destination URL into the URL shortener bar.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <h3 class="step-title">Set Custom Alias (Optional)</h3>
+                    <p class="step-desc">Choose a brand-friendly custom alias for your link or generate a random short identifier.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <h3 class="step-title">Share & Track</h3>
+                    <p class="step-desc">Distribute your short URL and monitor aggregate views in real-time on your dashboard.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features (About Platform) Grid -->
+        <section id="about" style="padding: 4rem 0;">
+            <h2 style="font-size: 2.25rem; text-align: center; margin-bottom: 3rem;">About the Platform</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Smart URL Shortening</h3>
+                    <p class="feature-desc">Instantly compress long web addresses into highly digestible, easy-to-type links. Perfect for social media, print, or email campaigns.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Real-Time Click Tracking</h3>
+                    <p class="feature-desc">Monitor performance stats. See how many times each shortened link has been opened to track user engagement and click-through interest.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Secure & OTP Guarded</h3>
+                    <p class="feature-desc">Your dashboard is fortified with email verification via SMTP OTP codes on sign up and forgot-password flows, ensuring maximum credential safety.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2zM9 16h6m-6-4h6m-6-4h6" />
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Custom Brand Aliases</h3>
+                    <p class="feature-desc">Make your links recognizable. Use custom readable words representing your brand or landing pages instead of random random-character URLs.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-16v3m9 8h-3M4 12h3m1.535-6.465l-.707.707M16.243 16.243l-.707.707M6.343 17.657l-.707.707M17.657 6.343l-.707-.707" />
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Instant QR Codes</h3>
+                    <p class="feature-desc">Generate premium scannable QR Codes for every link shortened. Allow mobile users to scan and jump straight to destinations on their mobile phones.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Dual Themes System</h3>
+                    <p class="feature-desc">Browse comfortably in dark or light modes. Save your preference to match your system aesthetics seamlessly with smooth, micro-transition triggers.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>LinkCraft</h3>
+                <p>Designed to optimize sharing experience. Build clean links, generate interactive QR codes, configure readable brand aliases, and review aggregate visits seamlessly from one secure portal.</p>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 1rem;">Platform Shortcuts</h4>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <li><a href="/login">Log In Account</a></li>
+                    <li><a href="/signup">Create New Account</a></li>
+                    <li><a href="#about">Key Service Features</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-copy">
+            <p>&copy; 2026 LinkCraft. All rights reserved. Double-guarded OTP-authenticated shortening service.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Setup light/dark theme switch logic
+        const toggleBtn = document.getElementById('theme-toggle');
+        toggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', targetTheme);
+            localStorage.setItem('theme', targetTheme);
+        });
+    </script>
+</body>
+</html>

@@ -7,7 +7,8 @@ const urlSchema = new mongoose.Schema({
     },
     short_url:{
         type:String,
-        required : true
+        required : true,
+        unique:true
     },
     visitCount:{
         type:Number,
@@ -18,6 +19,6 @@ const urlSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : "users"
     }
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model("urls",urlSchema);
