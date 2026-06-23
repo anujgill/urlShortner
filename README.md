@@ -1,6 +1,6 @@
-# URL Shortener App
+# ur.url App
 
-This is a URL shortener web application where users can shorten long URLs and view their shortened URL history after logging in. The application uses JWT (JSON Web Token) authentication for user authentication.
+This is a ur.url web application where users can shorten long URLs and view their shortened URL history after logging in. The application uses JWT (JSON Web Token) authentication for user authentication.
 
 ## Features
 

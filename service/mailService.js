@@ -7,7 +7,7 @@ const resendSendEmail = async ({ to, subject, html }) => {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            from: `"URL Shortener" <urlshortener@shergill.codes>`,
+            from: `"ur.url" <ur.url@shergill.codes>`,
             to,
             subject,
             html,
@@ -27,8 +27,8 @@ const resendSendEmail = async ({ to, subject, html }) => {
 async function sendOtpMail(toEmail, otpCode, purpose) {
     const isVerification = purpose === 'verification';
     const subject = isVerification
-        ? 'Verify Your Account - URL Shortener'
-        : 'Reset Your Password - URL Shortener';
+        ? 'Verify Your Account - ur.url'
+        : 'Reset Your Password - ur.url';
 
     const title = isVerification ? 'Verify Your Email' : 'Reset Your Password';
     const actionText = isVerification
@@ -44,7 +44,7 @@ async function sendOtpMail(toEmail, otpCode, purpose) {
     const htmlContent = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
             <div style="text-align: center; margin-bottom: 20px;">
-                <h1 style="color: #4f46e5; margin: 0; font-size: 28px;">${headerEmoji} URL Shortener</h1>
+                <h1 style="color: #4f46e5; margin: 0; font-size: 28px;">${headerEmoji} ur.url</h1>
                 <p style="color: #64748b; margin: 5px 0 0 0; font-size: 14px;">Shorten links, track clicks, modern analytics.</p>
             </div>
             <hr style="border: 0; border-top: 1px solid #e2e8f0; margin-bottom: 20px;" />
@@ -59,7 +59,7 @@ async function sendOtpMail(toEmail, otpCode, purpose) {
             </div>
             <hr style="border: 0; border-top: 1px solid #e2e8f0; margin-bottom: 20px;" />
             <div style="text-align: center; color: #94a3b8; font-size: 12px;">
-                <p style="margin: 0;">&copy; 2026 URL Shortener Inc. All rights reserved.</p>
+                <p style="margin: 0;">&copy; 2026 ur.url. All rights reserved.</p>
             </div>
         </div>
     `;
