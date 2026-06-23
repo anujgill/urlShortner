@@ -162,13 +162,10 @@ Manages JSON Web Tokens (JWT) for session creation and parsing.
 * **Session Cookie**: Cookie named `uid` with a maxAge of 12 hours. Uses the environment variable `SECRET_KEY` for verification/signing.
 
 ### 5.2. Email Mailer Service (`service/mailService.js`)
-Configures Nodemailer to send OTP codes via SMTP.
+Sends OTP emails via the **Resend API** using native `fetch`. Nodemailer/SMTP has been fully removed.
 
-* **SMTP Connection settings**:
-  - `service`: Configured via `MAIL_SERVICE` (defaults to `'gmail'`)
-  - `host`: Configured via `MAIL_HOST` (defaults to `'smtp.gmail.com'`)
-  - `port`: Configured via `MAIL_PORT` (defaults to `587`, secure: `false`)
-  - `auth`: `{ user: process.env.EMAIL, pass: process.env.PASS_KEY }`
+* **Configuration**:
+  - `RESEND_API_KEY`: API key for the Resend service.
 * **`sendOtpMail(toEmail, otpCode, purpose)`**:
   - Sends a modern HTML-formatted message containing a 6-digit OTP code.
   - Adapts content based on `purpose` (`'verification'` vs `'reset'`).
