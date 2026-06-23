@@ -282,9 +282,35 @@ Sends OTP emails via the **Resend API** using native `fetch`. Nodemailer/SMTP ha
 
 ---
 
-## 8. Deployment and Environment Variables
+## 9. Detailed Core Processes & External Integrations
 
-### 8.1. Environment Variables Configuration (`.env`)
+ur.url manages authentication, dynamic redirects, QR codes, and communications using standard procedures and external APIs:
+
+### 9.1. Authentication & Session Management
+- **Token Generation**: Upon successful credentials verification (verified against user email and bcrypt password hash), the server signs a JSON Web Token (JWT) with the payload `{ _id, username, email }` using `process.env.SECRET_KEY`.
+- **Cookie Transport**: The JWT is set as an HTTP cookie named `uid` with a maximum age of 12 hours.
+- **Access Guarding**: Custom middlewares inspect this cookie:
+  - `validUser`: Blocking middleware that verifies the token. Attaches user context to `req.user` or redirects to `/login` if missing or invalid.
+  - `checkAuth`: Non-blocking middleware that decodes active sessions to customize views (e.g. dashboard vs landing page) without interrupting request flows.
+- **Session Destruction**: Clearing the cookie `uid` (`res.clearCookie("uid")`) logs out the user and destroys the session.
+
+### 9.2. URL Processing Procedures
+- **Protocol Normalization**: The system automatically validates incoming URLs to guarantee valid redirection. If a destination lacks `http://` or `https://`, it automatically prepends `https://`.
+- **Short Slug Generation**:
+  - Random Slugs: Uses a loop-controlled unique random 8-character string generator.
+  - Custom Aliases: Users can choose custom paths (3-30 characters, alphanumeric). The system query-checks the database for availability first to prevent duplicates.
+- **Atomic Visited Counters**: Clicking a short URL fetches the document, atomically increments `visitCount` by 1 using MongoDB's `$inc` operator, and redirects the client browser to the destination.
+
+### 9.3. External APIs & Theme Syncing
+- **Dynamic QR Code Generation**: Renders click-to-view QR codes by calling the third-party API `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=...` with the absolute URL string.
+- **Visual Preference Syncing**: Supports light and dark mode toggles synced to client systems or custom override buttons, persisting choice parameters in the client's `localStorage.theme` key.
+- **OTP Mailing Delivery**: Delivers account verification and password reset emails containing 6-digit OTP codes via the **Resend API** (utilizing native HTTP `fetch` to POST data securely to `https://api.resend.com/emails`).
+
+---
+
+## 10. Deployment and Environment Variables
+
+### 10.1. Environment Variables Configuration (`.env`)
 To run this application locally, configure a `.env` file in the root directory:
 
 ```env
@@ -293,15 +319,12 @@ MONGO_URI = <YOUR_MONGODB_CONNECTION_STRING>
 base_URL = <YOUR_BASE_APP_URL_FOR_REDIRECTIONS>
 SECRET_KEY = <YOUR_JWT_HMAC_SECRET_KEY>
 
-# Email Service Config (Nodemailer SMTP)
-EMAIL = <SMTP_AUTH_SENDER_EMAIL>
-PASS_KEY = <SMTP_AUTH_APP_PASSWORD>
-MAIL_SERVICE = gmail
-MAIL_HOST = smtp.gmail.com
-MAIL_PORT = 587
+# Email Service Config (Resend API)
+RESEND_API_KEY = <YOUR_RESEND_API_KEY>
 ```
 
-### 8.2. Vercel Configuration (`vercel.json`)
-The application is pre-configured for Vercel deployment:
-- Entry Point: `index.js` handled by `@vercel/node`.
-- Routes: Rewrites all requests `/.*` to be handled by the Express engine in `index.js`.
+### 10.2. Vercel Configuration (`vercel.json`)
+The application is pre-configured for serverless hosting on Vercel:
+- **Serverless Entry**: The `index.js` startup file is processed using `@vercel/node`.
+- **Wildcard Rewrite**: Configures Express routing as a catch-all mapping to route requests through Express route definitions.
+
