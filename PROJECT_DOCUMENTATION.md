@@ -1,11 +1,11 @@
-# LinkCraft URL Shortener - System Documentation
+# ur.url URL Shortener - System Documentation
 
-This document contains a comprehensive, complete reference of the **LinkCraft URL Shortener** codebase. It covers the project architecture, detailed database schemas, authentication workflows, complete API routes, view templates, configuration details, and development guides.
+This document contains a comprehensive, complete reference of the **ur.url URL Shortener** codebase. It covers the project architecture, detailed database schemas, authentication workflows, complete API routes, view templates, configuration details, and development guides.
 
 ---
 
 ## 1. Project Overview & Features
-**LinkCraft** is a Node.js & Express-based URL Shortener web application that lets registered users shrink destination links, track click counts, and manage their links through a dashboard.
+**ur.url** is a Node.js & Express-based URL Shortener web application that lets registered users shrink destination links, track click counts, and manage their links through a dashboard.
 
 ### Core Features:
 - **JWT-Based Authentication**: Secure cookie sessions utilizing JWT.
