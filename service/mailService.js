@@ -7,7 +7,7 @@ const resendSendEmail = async ({ to, subject, html }) => {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            from: `"URL Shortener" <urlshortener@shergill.codes>`,
+            from: `"URL Shortener" <ur.url@shergill.codes>`,
             to,
             subject,
             html,
